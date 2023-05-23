@@ -1,20 +1,26 @@
 from PIL import Image
 
-import customtkinter
+import os
+
+import customtkinter as ctk
 
 import requests
 
 from pytube import YouTube
 
 import datetime
-#import calendar
+from datetime import date
+import calendar
 # import downloader
+
+# Constants
+PATH = os.path.dirname(os.path.realpath(__file__))
 
 # ================ Funtions ================
 
 def search():
     
-    global thumbnail
+    global thumbnail, info_video
 
     # Get Youtube video url
     url = MainFrame.e_url.get()
@@ -23,30 +29,45 @@ def search():
     # Video informations search
     title = yt.title # Title of video 
     author = yt.author # Get the video author    
-    view = yt.views # Number of views of video   
+    number_views = yt.views # Number of views of video   
     rating = yt.rating # Get the video average rating 
     duration = str(datetime.timedelta(seconds=yt.length)) # Length of the video
-    publish_date = yt.publish_date # Get the publish date   
-    description = yt.description # Description of video 
+    publish_date = yt.publish_date.strftime('%d/%m/%y') # Get the publish date      
+    description = yt.description # Description of video     
 
     # Get and processing of thumbnail
     thumbnail_url = yt.thumbnail_url # cover of the video
     thumbnail = Image.open(requests.get(thumbnail_url, stream=True).raw)
-    thumbnail = customtkinter.CTkImage(thumbnail, size=(280, 200))
+    thumbnail = ctk.CTkImage(light_image=thumbnail, size=(280, 200))
+
+    info_video = {
+        'Title': title,
+        'Channel': author,
+        'Views': number_views,
+        'Rating': rating,
+        'Duration': duration,
+        'Date': publish_date,        
+        'Description': description
+    }
+
+    MainFrame.l_title.configure(text="Título: " + info_video["Title"])
     
-    #img_ = img_.resize((230, 150), Image.ANTIALIAS)
-    #img_ = ImageTk.PhotoImage(img_)
+    #print (info_video)
 
-    #global img
+    #return (info_video)
+    '''img_ = img_.resize((230, 150), Image.ANTIALIAS)
+    img_ = ImageTk.PhotoImage(img_)
 
-    #img=img_
-    #l_image['image']=img
+    global img
 
-    '''l_title['text']="Titlo : " + str(title)
+    img=img_
+    l_image['image']=img
+
+    l_title['text']="Titlo : " + str(title)
     l_view['text']="Views : " + str('{:,}'.format(view))
-    l_time['text']="Duracao : " + str(duration)'''
+    l_time['text']="Duracao : " + str(duration)
 
-#print(cover)
+print(cover)
 
 previousprogress = 0
 
@@ -71,24 +92,60 @@ def download():
     yt.streams.filter(only_audio=False).first().download()
 
 
-class MainFrame(customtkinter.CTkFrame):
+'''
+
+class FrameTitleBar(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+        
+        # Font object
+        font_title = ctk.CTkFont(family="Verdana", size=24, weight="bold")
+
+        # Open image
+        app_img = ctk.CTkImage(Image.open(PATH + "/images/logo.png"), size=(50,50))
+        
+        # Add widgets onto the FrameTitleBar
+        label_img = ctk.CTkLabel(self, text="", image=app_img)
+        label_img.grid(row=0, column=0, padx=(10,5), pady=5, stick="ne")
+
+        label_title = ctk.CTkLabel(self, text="Youtube Downloader App", font=font_title)
+        label_title.grid(row=0, column=1, padx=(5,0), pady=0, stick="nse")
+
+class MainFrame(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+       
+        my_image = ctk.CTkImage(light_image=Image.open("D:\Arquivos\GitHub\youtube_downloader\img-pokemon-list.png"), size=(375, 320))
+
+        font_title = ctk.CTkFont(size=14, weight="bold")
+        font_label = ctk.CTkFont(size=13, weight="bold")
 
         # add widgets onto the frame        
-        self.l_url = customtkinter.CTkLabel(self, text="Enter URL:") # label url
+        self.l_url = ctk.CTkLabel(self, text="Enter URL:", font=font_title) # label url
         self.l_url.grid(row=0, column=0, padx=20, pady=15)
-        self.e_url = customtkinter.CTkEntry(self, width=320) # entry url
-        self.e_url.grid(row=0, column=1, padx=0, pady=15)
-        self.b_search = customtkinter.CTkButton(self, text="Search", width=100)
+        MainFrame.e_url = ctk.CTkEntry(self, width=350) # entry url
+        MainFrame.e_url.grid(row=0, column=1, padx=0, pady=15)
+        self.b_search = ctk.CTkButton(self, text="Search", width=140, command=search, font=font_title)
         self.b_search.grid(row=0, column=2, padx=(20, 20), pady=15)
+        self.img_thumb = ctk.CTkLabel(self, image=my_image, text="")  # display video cover with a CTkLabel
+        self.img_thumb.grid(row=2, column=0, rowspan=5, columnspan=2, padx=(20, 20), pady=(15, 30))
 
-        self.img_thumb = customtkinter.CTkLabel(self, image=thumbnail, text="")  # display video cover with a CTkLabel
+        # widgets with video data
+        MainFrame.l_title = ctk.CTkLabel(self, text="Título", font=font_title)
+        MainFrame.l_title.grid(row=1, column=0, columnspan=3, padx=20, pady=0)
+        self.l_title = ctk.CTkLabel(self, text="Canal: ", font=font_label)
+        self.l_title.grid(row=2, column=2, padx=20, pady=15)
+        self.l_title = ctk.CTkLabel(self, text="Views: ", font=font_label)
+        self.l_title.grid(row=3, column=2, padx=20, pady=15)
+        self.l_title = ctk.CTkLabel(self, text="Data: ", font=font_label)
+        self.l_title.grid(row=4, column=2, padx=20, pady=15)
+        self.l_title = ctk.CTkLabel(self, text="Duração: ", font=font_label)
+        self.l_title.grid(row=5, column=2, padx=20, pady=15)
 
-class App(customtkinter.CTk):
+class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.geometry("600x500")
+        #self.geometry("680x580")
         self.title("YouTube Downloader App")
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -96,7 +153,6 @@ class App(customtkinter.CTk):
         self.frame = MainFrame(master=self)
         self.frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
-search()
 
 app = App()
 app.mainloop()

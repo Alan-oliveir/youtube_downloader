@@ -99,23 +99,27 @@ class FrameTitleBar(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         
         # Font object
-        font_title = ctk.CTkFont(family="Verdana", size=24, weight="bold")
+        font_title = ctk.CTkFont(family="Verdana", size=21, weight="bold")
 
         # Open image
-        app_img = ctk.CTkImage(Image.open(PATH + "/images/logo.png"), size=(50,50))
+        app_img = ctk.CTkImage(Image.open(PATH + "/images/logo.png"), size=(60,45))
         
         # Add widgets onto the FrameTitleBar
         label_img = ctk.CTkLabel(self, text="", image=app_img)
         label_img.grid(row=0, column=0, padx=(10,5), pady=5, stick="ne")
 
         label_title = ctk.CTkLabel(self, text="Youtube Downloader App", font=font_title)
-        label_title.grid(row=0, column=1, padx=(5,0), pady=0, stick="nse")
+        label_title.grid(row=0, column=1, padx=(5,0), pady=5, stick="nse")
 
 class MainFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
        
         my_image = ctk.CTkImage(light_image=Image.open("D:\Arquivos\GitHub\youtube_downloader\img-pokemon-list.png"), size=(375, 320))
+
+        img_download = ctk.CTkImage(Image.open(PATH + "/images/download.png"), size=(25, 25))
+
+        img_search = ctk.CTkImage(Image.open(PATH + "/images/search.png"), size=(25, 25))
 
         font_title = ctk.CTkFont(size=14, weight="bold")
         font_label = ctk.CTkFont(size=13, weight="bold")
@@ -125,22 +129,24 @@ class MainFrame(ctk.CTkFrame):
         self.l_url.grid(row=0, column=0, padx=20, pady=15)
         MainFrame.e_url = ctk.CTkEntry(self, width=350) # entry url
         MainFrame.e_url.grid(row=0, column=1, padx=0, pady=15)
-        self.b_search = ctk.CTkButton(self, text="Search", width=140, command=search, font=font_title)
+        self.b_search = ctk.CTkButton(self, text="Search", width=140, command=search, font=font_title, image=img_search, compound="left")
         self.b_search.grid(row=0, column=2, padx=(20, 20), pady=15)
         self.img_thumb = ctk.CTkLabel(self, image=my_image, text="")  # display video cover with a CTkLabel
         self.img_thumb.grid(row=2, column=0, rowspan=5, columnspan=2, padx=(20, 20), pady=(15, 30))
+        self.b_download = ctk.CTkButton(self, text="Baixar", width=140, command=None, font=font_title, height=50, image=img_download, compound="left")
+        self.b_download.grid(row=6, column=2, padx=(20, 20), pady=(15, 30))
 
         # widgets with video data
-        MainFrame.l_title = ctk.CTkLabel(self, text="Título", font=font_title)
-        MainFrame.l_title.grid(row=1, column=0, columnspan=3, padx=20, pady=0)
+        MainFrame.l_title = ctk.CTkLabel(self, text="Título:", font=font_title)
+        MainFrame.l_title.grid(row=1, column=0, columnspan=3, padx=20, pady=0, stick="nw")
         self.l_title = ctk.CTkLabel(self, text="Canal: ", font=font_label)
-        self.l_title.grid(row=2, column=2, padx=20, pady=15)
+        self.l_title.grid(row=2, column=2, padx=20, pady=15, stick="nw")
         self.l_title = ctk.CTkLabel(self, text="Views: ", font=font_label)
-        self.l_title.grid(row=3, column=2, padx=20, pady=15)
+        self.l_title.grid(row=3, column=2, padx=20, pady=15, stick="nw")
         self.l_title = ctk.CTkLabel(self, text="Data: ", font=font_label)
-        self.l_title.grid(row=4, column=2, padx=20, pady=15)
+        self.l_title.grid(row=4, column=2, padx=20, pady=15, stick="nw")
         self.l_title = ctk.CTkLabel(self, text="Duração: ", font=font_label)
-        self.l_title.grid(row=5, column=2, padx=20, pady=15)
+        self.l_title.grid(row=5, column=2, padx=20, pady=15, stick="nw")
 
 class App(ctk.CTk):
     def __init__(self):
@@ -150,8 +156,12 @@ class App(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
 
+        # Add frames to App        
+        self.FrameTitleBar = FrameTitleBar(master=self)
+        self.FrameTitleBar.grid(row=0, column=0, padx=5, pady=5, stick="new")
+
         self.frame = MainFrame(master=self)
-        self.frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        self.frame.grid(row=1, column=0, padx=5, pady=(0, 8), sticky="nsew")
 
 
 app = App()

@@ -2,6 +2,8 @@ import os
 
 from PIL import Image
 
+from tkinter import messagebox
+
 import customtkinter as ctk
 
 import requests
@@ -20,39 +22,45 @@ def search():
 
     # Get Youtube video url
     url = MainFrame.e_url.get()
-    yt = YouTube(url)
+
+    try:
+        yt = YouTube(url)
+
+    except:
+        messagebox.showerror('Erro', f'Vídeo {url} não está disponível.')
 
     # Video informations search
-    title = yt.title # Title of video 
-    author = yt.author # Get the video author    
-    number_views = yt.views # Number of views of video   
-    rating = yt.rating # Get the video average rating 
-    duration = str(datetime.timedelta(seconds=yt.length)) # Length of the video
-    publish_date = yt.publish_date.strftime('%d/%m/%y') # Get the publish date      
-    description = yt.description # Description of video     
+    else:    
+        title = yt.title # Title of video 
+        author = yt.author # Get the video author    
+        number_views = yt.views # Number of views of video   
+        rating = yt.rating # Get the video average rating 
+        duration = str(datetime.timedelta(seconds=yt.length)) # Length of the video
+        publish_date = yt.publish_date.strftime('%d/%m/%y') # Get the publish date      
+        description = yt.description # Description of video     
 
-    # Get and processing of thumbnail
-    thumbnail_url = yt.thumbnail_url # cover of the video
-    thumbnail = Image.open(requests.get(thumbnail_url, stream=True).raw)
-    thumbnail = ctk.CTkImage(light_image=thumbnail, size=(570, 320))
+        # Get and processing of thumbnail
+        thumbnail_url = yt.thumbnail_url # cover of the video
+        thumbnail = Image.open(requests.get(thumbnail_url, stream=True).raw)
+        thumbnail = ctk.CTkImage(light_image=thumbnail, size=(570, 320))
 
-    info_video = {
-        'Title': title,
-        'Channel': author,
-        'Views': number_views,
-        'Rating': rating,
-        'Duration': duration,
-        'Date': publish_date,
-        'Thumbnail': thumbnail,        
-        'Description': description
-    }
+        info_video = {
+            'Title': title,
+            'Channel': author,
+            'Views': number_views,
+            'Rating': rating,
+            'Duration': duration,
+            'Date': publish_date,
+            'Thumbnail': thumbnail,        
+            'Description': description
+        }
 
-    MainFrame.l_title.configure(text="Título: " + info_video["Title"])
-    MainFrame.l_channel.configure(text="Canal: " + info_video["Channel"])
-    MainFrame.l_views.configure(text="Views: " + str(info_video["Views"]))
-    MainFrame.l_date.configure(text="Data: " + info_video["Date"])
-    MainFrame.l_duration.configure(text="Duração: " + info_video["Duration"])
-    MainFrame.img_thumb.configure(text="", image=info_video["Thumbnail"])    
+        MainFrame.l_title.configure(text="Título: " + info_video["Title"])
+        MainFrame.l_channel.configure(text="Canal: " + info_video["Channel"])
+        MainFrame.l_views.configure(text="Views: " + str(info_video["Views"]))
+        MainFrame.l_date.configure(text="Data: " + info_video["Date"])
+        MainFrame.l_duration.configure(text="Duração: " + info_video["Duration"])
+        MainFrame.img_thumb.configure(text="", image=info_video["Thumbnail"])    
     
 def download():
 

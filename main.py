@@ -52,10 +52,8 @@ def search():
     MainFrame.l_views.configure(text="Views: " + str(info_video["Views"]))
     MainFrame.l_date.configure(text="Data: " + info_video["Date"])
     MainFrame.l_duration.configure(text="Duração: " + info_video["Duration"])
-    MainFrame.img_thumb.configure(text="", image=info_video["Thumbnail"])
+    MainFrame.img_thumb.configure(text="", image=info_video["Thumbnail"])    
     
-    print (info_video)  
-
 def download():
 
     try:
@@ -63,11 +61,10 @@ def download():
         ytObject = YouTube(ytLink, on_progress_callback=on_progress)
         video = ytObject.streams.get_highest_resolution()
         video.download()
-        FrameBottomBar.l_status.configure(text="Concluído", anchor="center")
+        FrameBottomBar.l_status.configure(text="Concluído")
     
     except:
         FrameBottomBar.l_status.configure(text="Falhou", text_color="red")
-
 
 def on_progress(stream, chunk, bytes_remaining):
 
@@ -84,6 +81,8 @@ def on_progress(stream, chunk, bytes_remaining):
     # Update progress bar
     FrameBottomBar.progress.set(float(porcentage_completed)/100)
 
+
+# ================ Frames ================
 
 class FrameTitleBar(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -173,8 +172,7 @@ class FrameBottomBar(ctk.CTkFrame):
 
 class App(ctk.CTk):
     def __init__(self):
-        super().__init__()
-        #self.geometry("680x580")
+        super().__init__()        
         self.title("YouTube Downloader App")
 
         # configure grid system

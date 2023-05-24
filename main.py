@@ -74,7 +74,15 @@ def on_progress(stream, chunk, bytes_remaining):
     total_size = stream.filesize
     bytes_downloaded = total_size - bytes_remaining
     porcentage_completed = bytes_downloaded / total_size * 100
+    percentage = str(int(porcentage_completed))
     print(porcentage_completed)
+
+    # Update percentage progress label
+    FrameBottomBar.l_porcentage_value.configure(text=percentage + '%')
+    FrameBottomBar.l_porcentage_value.update()
+
+    # Update progress bar
+    FrameBottomBar.progress.set(float(porcentage_completed)/100)
 
 
 class FrameTitleBar(ctk.CTkFrame):
@@ -152,12 +160,12 @@ class FrameBottomBar(ctk.CTkFrame):
         l_porcentage = ctk.CTkLabel(self, text="Progresso:", font=font_label)
         l_porcentage.grid(row=0, column=0, padx=(10, 0), pady=5, stick="ne")
 
-        l_porcentage = ctk.CTkLabel(self, text="0%", font=font_label)
-        l_porcentage.grid(row=0, column=1, padx=(5, 5), pady=5, stick="ne")
+        FrameBottomBar.l_porcentage_value = ctk.CTkLabel(self, text="0%", font=font_label)
+        FrameBottomBar.l_porcentage_value.grid(row=0, column=1, padx=(5, 5), pady=5, stick="ne")
 
-        progress = ctk.CTkProgressBar(self, width=560, height=12)
-        progress.set(0)
-        progress.grid(row=0, column=2, padx=(5, 0), pady=5, stick="e")
+        FrameBottomBar.progress = ctk.CTkProgressBar(self, width=560, height=12)
+        FrameBottomBar.progress.set(0)
+        FrameBottomBar.progress.grid(row=0, column=2, padx=(5, 0), pady=5, stick="e")
 
         FrameBottomBar.l_status = ctk.CTkLabel(self, text="", font=font_status)
         FrameBottomBar.l_status.grid(row=0, column=3, padx=20, pady=5)

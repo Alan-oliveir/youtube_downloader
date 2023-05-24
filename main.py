@@ -181,6 +181,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()        
         self.title("YouTube Downloader App")
+        self.resizable(False, False)
 
         # configure grid system
         self.grid_rowconfigure(0, weight=1)  

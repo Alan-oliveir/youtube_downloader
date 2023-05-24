@@ -60,7 +60,7 @@ def download():
         ytLink = MainFrame.e_url.get()
         ytObject = YouTube(ytLink, on_progress_callback=on_progress)
         video = ytObject.streams.get_highest_resolution()
-        video.download()
+        video.download(output_path=PATH + "/downloads")
         FrameBottomBar.l_status.configure(text="Concluído")
     
     except:

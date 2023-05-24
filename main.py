@@ -72,8 +72,7 @@ def on_progress(stream, chunk, bytes_remaining):
     bytes_downloaded = total_size - bytes_remaining
     porcentage_completed = bytes_downloaded / total_size * 100
     percentage = str(int(porcentage_completed))
-    print(porcentage_completed)
-
+    
     # Update percentage progress label
     FrameBottomBar.l_porcentage_value.configure(text=percentage + '%')
     FrameBottomBar.l_porcentage_value.update()
